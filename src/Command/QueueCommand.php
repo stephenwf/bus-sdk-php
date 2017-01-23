@@ -37,13 +37,13 @@ abstract class QueueCommand extends Command
         parent::__construct(null);
     }
 
-    abstract protected function process(InputInterface $input, QueueItem $item);
+    abstract protected function process(InputInterface $input, QueueItem $item, $entity);
 
     protected function configure()
     {
         $this
             ->setName('queue:watch')
-            ->setDescription('Watches SQS for changes to articles, ');
+            ->setDescription('Watches SQS for changes to articles');
     }
 
     final public function execute(InputInterface $input, OutputInterface $output)
@@ -93,7 +93,7 @@ abstract class QueueCommand extends Command
         if ($item) {
             $this->monitoring->startTransaction();
             if ($entity = $this->transform($item)) {
-                $this->process($input, $item);
+                $this->process($input, $item, $entity);
             }
             $this->monitoring->endTransaction();
         }
